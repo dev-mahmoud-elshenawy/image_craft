@@ -1,30 +1,78 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
-import 'package:image_craft/main.dart';
+import 'package:image_craft/image_craft.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('ImageCraft loads an asset image', (WidgetTester tester) async {
+    // Mock the necessary dependencies and responses here
+    final String assetPath = 'assets/image.jpg';
+    final ImageType imageType = ImageType.ASSET;
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ImageCraft(
+            path: assetPath,
+            imageType: imageType,
+          ),
+        ),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // Initially, the LoadingPlaceholder should be shown
+    expect(find.byType(LoadingPlaceholder), findsOneWidget);
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // Simulate the completion of the Future and re-build the widget
+    await tester.pumpAndSettle();
+
+    // Check that the correct image widget is rendered
+    expect(find.byType(Image), findsOneWidget);
+  });
+
+  testWidgets('ImageCraft shows error widget on error', (WidgetTester tester) async {
+    // Mock the necessary dependencies to simulate an error response
+    final String invalidPath = 'invalid/path/to/image.png';
+    final ImageType imageType = ImageType.NETWORK;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ImageCraft(
+            path: invalidPath,
+            imageType: imageType,
+            errorWidget: Text('Error loading image'),
+          ),
+        ),
+      ),
+    );
+
+    // Initially, the LoadingPlaceholder should be shown
+    expect(find.byType(LoadingPlaceholder), findsOneWidget);
+
+    // Simulate the completion of the Future and re-build the widget
+    await tester.pumpAndSettle();
+
+    // Check that the error widget is shown
+    expect(find.text('Error loading image'), findsOneWidget);
+  });
+
+  testWidgets('ImageCraft shows placeholder while loading', (WidgetTester tester) async {
+    final String assetPath = 'assets/image.png';
+    final ImageType imageType = ImageType.ASSET;
+
+    await tester.pumpWidget(
+      MaterialApp(
+        home: Scaffold(
+          body: ImageCraft(
+            path: assetPath,
+            imageType: imageType,
+            placeholder: CircularProgressIndicator(),
+          ),
+        ),
+      ),
+    );
+
+    // Check that the placeholder is displayed while the image is loading
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
   });
 }
