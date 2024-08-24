@@ -1,6 +1,9 @@
+# 1.0.6
+- **Updated License**: Edited the MIT License to ensure compliance with OSI-approved licensing requirements, allowing for broader usage and distribution of the package.
+
 # 1.0.5
 - **Minor Changes**: No significant changes.
-- 
+
 # 1.0.4
 - **Unit Test Enhancements**: Made changes in unit tests to improve coverage and ensure reliability across different platforms.
 - **Universal HTML Package Integration**: Replaced dart:html with the universal_html package to handle HTML-related functionality, addressing platform compatibility issues.
