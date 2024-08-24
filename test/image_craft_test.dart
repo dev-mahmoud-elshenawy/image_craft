@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:image_craft/image_craft.dart';
 
+import 'mock/mock_manager.dart';
+
 void main() {
   testWidgets('ImageCraft loads an asset image', (WidgetTester tester) async {
     // Mock the necessary dependencies and responses here
@@ -29,9 +31,19 @@ void main() {
     expect(find.byType(Image), findsOneWidget);
   });
 
-  testWidgets('ImageCraft shows error widget on error', (WidgetTester tester) async {
-    // Mock the necessary dependencies to simulate an error response
-    final String invalidPath = 'invalid/path/to/image.png';
+  testWidgets('ImageCraft shows error widget on error',
+      (WidgetTester tester) async {
+    // Use the mock image loader
+    final mockImageLoader = MockCacheManager();
+
+    // Replace the image loader in the factory with the mock
+    ImageLoaderFactory.setLoaderOverride((imageType) {
+      return mockImageLoader;
+    });
+
+    // Mock an invalid URL
+    final String invalidPath =
+        'https://w7.pngwing.com/pngs/537/866/png-transparent-flutter-hd-logo.png';
     final ImageType imageType = ImageType.NETWORK;
 
     await tester.pumpWidget(
@@ -54,9 +66,13 @@ void main() {
 
     // Check that the error widget is shown
     expect(find.text('Error loading image'), findsOneWidget);
+
+    // Clean up the factory
+    ImageLoaderFactory.resetLoaderOverride();
   });
 
-  testWidgets('ImageCraft shows placeholder while loading', (WidgetTester tester) async {
+  testWidgets('ImageCraft shows placeholder while loading',
+      (WidgetTester tester) async {
     final String assetPath = 'assets/image.png';
     final ImageType imageType = ImageType.ASSET;
 
