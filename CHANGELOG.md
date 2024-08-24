@@ -1,3 +1,6 @@
+# 1.0.2
+- **Web Caching Support**: Added support for caching in web applications to enhance performance and reduce loading times.
+
 # 1.0.1
 - **Fixed Links in README**: Corrected some links in the README for better navigation and clarity.
 

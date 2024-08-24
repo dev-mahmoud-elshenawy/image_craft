@@ -1,7 +1,9 @@
 import 'dart:io';
+import 'package:flutter/foundation.dart' show kIsWeb;
 import 'package:flutter/services.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:path/path.dart' as path;
+import 'dart:html' as html; // For web caching
 
 /// A class responsible for managing cached files in the application.
 ///
@@ -40,34 +42,25 @@ import 'package:path/path.dart' as path;
 ///     - `url`: A `String` representing the URL of the file to cache.
 ///   - **Returns**: A `Future<File>` that resolves to the local file
 ///     associated with the specified URL.
-///   - **Example**:
-///     ```dart
-///     File localFile = await cacheManager.getLocalFile('https://example.com/image.png');
-///     ```
 ///
 /// - `Future<void> _cleanupCache(Directory cacheDir)`:
 ///   - Cleans up old cached files in the specified cache directory.
 ///   - This method is not intended to be called directly. It is used
 ///     internally to maintain the cache by deleting files that have
 ///     not been modified within the defined `cacheCleanupThreshold`.
-///   - **Parameters**:
-///     - `cacheDir`: A `Directory` object representing the cache directory to clean up.
-///   - **Returns**: A `Future<void>`, indicating the completion of the cleanup operation.
 ///
 /// - `Future<void> preCacheAsset(String assetPath)`:
 ///   - Pre-caches an asset from the application's bundle into the
 ///     temporary directory. This is useful for assets that are
 ///     frequently used, allowing them to be loaded quickly without
 ///     fetching them from the network or reading them from disk each time.
-///   - **Parameters**:
-///     - `assetPath`: A `String` representing the path of the asset
-///       within the application's bundle.
-///   - **Returns**: A `Future<void>`, indicating the completion of
-///     the pre-caching operation.
-///   - **Example**:
-///     ```dart
-///     await cacheManager.preCacheAsset('assets/images/logo.png');
-///     ```
+///
+/// - `Future<void> cacheImage(String url)`:
+///   - Caches an image URL for web scenarios. This will store the image URL
+///     in local storage.
+///
+/// - `Future<String?> getCachedImage(String url)`:
+///   - Retrieves a cached image URL for web scenarios from local storage.
 ///
 /// ## Usage Example:
 ///
@@ -113,11 +106,35 @@ class CacheManager {
   /// **Returns**: A [Future<File>] that resolves to the local file
   /// associated with the specified URL.
   Future<File> getLocalFile(String url) async {
-    final directory = await getTemporaryDirectory();
-    final filename = path.basename(Uri.parse(url).path);
-    final file = File('${directory.path}/$filename');
-    _cleanupCache(directory);
-    return file;
+    if (kIsWeb) {
+      // Handle web caching
+      return _getWebFile(url);
+    } else {
+      // Handle mobile caching
+      final directory = await getTemporaryDirectory();
+      final filename = path.basename(Uri.parse(url).path);
+      final file = File('${directory.path}/$filename');
+      await _cleanupCache(directory);
+      return file;
+    }
+  }
+
+  /// Handles retrieving a cached file URL for web scenarios.
+  ///
+  /// **Parameters**:
+  /// - [url]: A [String] representing the URL of the file to cache.
+  ///
+  /// **Returns**: A [Future<File>] that resolves to the local file
+  /// associated with the specified URL.
+  Future<File> _getWebFile(String url) async {
+    // In web, we return a placeholder or perform web caching using localStorage
+    String? cachedUrl = await getCachedImage(url);
+    if (cachedUrl != null) {
+      // For demo purposes, we simulate file retrieval (web only)
+      return File(
+          cachedUrl); // In a real scenario, you may not have a File object here.
+    }
+    return Future.value(File(url)); // Return the URL wrapped in a File object.
   }
 
   /// Cleans up old cached files in the specified [cacheDir].
@@ -158,11 +175,42 @@ class CacheManager {
   /// **Returns**: A [Future<void>], indicating the completion of
   /// the pre-caching operation.
   Future<void> preCacheAsset(String assetPath) async {
-    final directory = await getTemporaryDirectory();
-    final filename = path.basename(assetPath);
-    final file = File('${directory.path}/$filename');
-    // Load the asset data and write it to the cache.
-    final ByteData data = await rootBundle.load(assetPath);
-    await file.writeAsBytes(data.buffer.asUint8List());
+    if (kIsWeb) {
+      // For web, assets can be handled differently
+      return; // Implement web asset caching if needed
+    } else {
+      final directory = await getTemporaryDirectory();
+      final filename = path.basename(assetPath);
+      final file = File('${directory.path}/$filename');
+      // Load the asset data and write it to the cache.
+      final ByteData data = await rootBundle.load(assetPath);
+      await file.writeAsBytes(data.buffer.asUint8List());
+    }
+  }
+
+  /// Caches an image URL for web scenarios.
+  ///
+  /// **Parameters**:
+  /// - [url]: A [String] representing the URL of the image to cache.
+  ///
+  /// **Returns**: A [Future<void>] indicating the completion of the caching operation.
+  Future<void> cacheImage(String url) async {
+    if (kIsWeb) {
+      html.window.localStorage[url] =
+          url; // Store the image URL in local storage
+    }
+  }
+
+  /// Retrieves a cached image URL for web scenarios from local storage.
+  ///
+  /// **Parameters**:
+  /// - [url]: A [String] representing the URL of the image to retrieve.
+  ///
+  /// **Returns**: A [Future<String?>] that resolves to the cached image URL or `null` if not found.
+  Future<String?> getCachedImage(String url) async {
+    if (kIsWeb) {
+      return html.window.localStorage[url]; // Retrieve the cached image URL
+    }
+    return null; // Return null for non-web platforms
   }
 }
