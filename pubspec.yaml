@@ -1,6 +1,6 @@
 name: image_craft
 description: ImageCraft aims to simplify image handling in Flutter applications while providing robust caching mechanisms.
-version: 1.0.2
+version: 1.0.5
 homepage: https://github.com/dev-mahmoud-elshenawy/image_craft
 repository: https://github.com/dev-mahmoud-elshenawy/image_craft
 issue_tracker: https://github.com/dev-mahmoud-elshenawy/image_craft/issues
@@ -19,6 +19,7 @@ dependencies:
   http: ^1.2.2
   flutter_svg: ^2.0.10+1
   mockito: ^5.4.4
+  universal_html: ^2.2.4
 
 dev_dependencies:
   flutter_test:

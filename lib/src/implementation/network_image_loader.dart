@@ -7,13 +7,13 @@ import 'package:image_craft/image_craft.dart';
 ///
 /// The `NetworkImageLoader` class extends the [ImageLoader] abstract class
 /// and provides functionality to fetch images from a network URL, cache them
-/// locally using the [CacheManager], and display them in a widget.
+/// locally using the [CachedManager], and display them in a widget.
 ///
 /// ## Constructor:
 ///
 /// - `NetworkImageLoader({CacheManager? cacheManager})`:
 ///   - **Parameters**:
-///     - `cacheManager`: An optional instance of [CacheManager] to handle
+///     - `cacheManager`: An optional instance of [CachedManager] to handle
 ///       local file caching. If not provided, a default instance will be created.
 ///
 /// ## Method:
@@ -51,16 +51,16 @@ import 'package:image_craft/image_craft.dart';
 /// widget if no error widget is provided.
 class NetworkImageLoader extends ImageLoader {
   /// The cache manager instance used for handling cached images.
-  final CacheManager cacheManager;
+  final CachedManager cacheManager;
 
   /// Creates a [NetworkImageLoader] instance with an optional cache manager.
   ///
   /// **Parameters**:
-  /// - [cacheManager]: An optional instance of [CacheManager]. If null, a
+  /// - [cacheManager]: An optional instance of [CachedManager]. If null, a
   ///   default instance will be created.
   NetworkImageLoader({
-    CacheManager? cacheManager,
-  }) : cacheManager = cacheManager ?? CacheManager();
+    CachedManager? cacheManager,
+  }) : cacheManager = cacheManager ?? CachedManager.getInstance();
 
   /// Loads an image from a network URL or from the local cache if available.
   ///

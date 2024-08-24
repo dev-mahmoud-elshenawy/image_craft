@@ -84,7 +84,7 @@ class ImageCraft extends StatelessWidget {
     final loader = ImageLoaderFactory.getImageLoader(imageType);
 
     if (preCacheAssets && imageType == ImageType.ASSET) {
-      CacheManager().preCacheAsset(path);
+      CachedManager.getInstance().preCacheAsset(path);
     }
 
     return FutureBuilder<Widget>(

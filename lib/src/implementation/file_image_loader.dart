@@ -5,14 +5,14 @@ import 'package:image_craft/image_craft.dart';
 ///
 /// The `FileImageLoader` class extends the [ImageLoader] abstract class and implements
 /// the `loadImage` method to retrieve images stored in the local file system.
-/// It utilizes the [CacheManager] to manage caching and the [ImageDecoder] to decode
+/// It utilizes the [CachedManager] to manage caching and the [ImageDecoder] to decode
 /// images for rendering.
 ///
 /// ## Constructor:
 ///
 /// - `FileImageLoader({CacheManager? cacheManager, ImageDecoder? imageDecoder})`:
 ///   - **Parameters**:
-///     - `cacheManager`: An optional instance of [CacheManager] to handle
+///     - `cacheManager`: An optional instance of [CachedManager] to handle
 ///       local file caching. If not provided, a default instance will be created.
 ///     - `imageDecoder`: An optional instance of [ImageDecoder] to handle image
 ///       decoding. If not provided, a default instance will be created.
@@ -52,7 +52,7 @@ import 'package:image_craft/image_craft.dart';
 /// `errorWidget` or an `ErrorPlaceholder` widget if no error widget is provided.
 class FileImageLoader extends ImageLoader {
   /// The cache manager instance used for handling cached images.
-  final CacheManager cacheManager;
+  final CachedManager cacheManager;
 
   /// The image decoder instance used for decoding image files.
   final ImageDecoder imageDecoder;
@@ -61,14 +61,14 @@ class FileImageLoader extends ImageLoader {
   /// image decoder.
   ///
   /// **Parameters**:
-  /// - [cacheManager]: An optional instance of [CacheManager]. If null, a
+  /// - [cacheManager]: An optional instance of [CachedManager]. If null, a
   ///   default instance will be created.
   /// - [imageDecoder]: An optional instance of [ImageDecoder]. If null, a
   ///   default instance will be created.
   FileImageLoader({
-    CacheManager? cacheManager,
+    CachedManager? cacheManager,
     ImageDecoder? imageDecoder,
-  })  : cacheManager = cacheManager ?? CacheManager(),
+  })  : cacheManager = cacheManager ?? CachedManager.getInstance(),
         imageDecoder = imageDecoder ?? ImageDecoder();
 
   /// Loads an image from the local file system and returns a widget displaying

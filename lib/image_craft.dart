@@ -1,8 +1,10 @@
 export 'src/core/image_type.dart';
 
-export 'src/data/cached_manager.dart';
 export 'src/data/image_decoder.dart';
 export 'src/data/placeholder_manager.dart';
+export 'src/data/cache/cached_manager.dart';
+export 'src/data/cache/web_cached_manager.dart';
+export 'src/data/cache/universal_cached_manager.dart';
 
 export 'src/domain/image_loader.dart';
 export 'src/domain/image_loader_factory.dart';
