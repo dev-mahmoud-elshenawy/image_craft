@@ -1,3 +1,6 @@
+# 1.0.1
+- **Fixed Links in README**: Corrected some links in the README for better navigation and clarity.
+
 # 1.0.0
 
 - **Initial Release**: Released initial version of the image_craft package, supporting image loading from various sources (network, assets, SVG, and files) with caching, error handling, and loading indicators.
