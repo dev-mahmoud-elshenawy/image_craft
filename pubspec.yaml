@@ -1,6 +1,6 @@
 name: image_craft
 description: ImageCraft is a powerful Dart package that simplifies image handling. It supports network images, assets, file, and SVGs, all within a single widget. With built-in caching for network images and pre-caching for assets, it ensures efficient and smooth image loading. Ideal for developers seeking advanced, unified image management in their apps.
-version: 1.0.0
+version: 1.0.1
 homepage: https://github.com/dev-mahmoud-elshenawy/image_craft
 repository: https://github.com/dev-mahmoud-elshenawy/image_craft
 issue_tracker: https://github.com/dev-mahmoud-elshenawy/image_craft/issues
